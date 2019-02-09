@@ -25,7 +25,7 @@ class MazeGen():
     def reset(self):
         self._player = [0,0]
         self._terminal_status = False
-        self._set_up_maze()
+        
     
     def _set_up_maze(self):
         """ maze has no walls """
@@ -89,8 +89,6 @@ class MazeGen():
             self._star.remove(loc)
 
         loc_1,r = self._check_action_reward(aciton,loc)
-        
-        
         
         return loc_1
 
