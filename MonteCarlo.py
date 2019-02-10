@@ -10,6 +10,7 @@ class MonteCarlo(MultiArmBandit):
         self._env.reset()
         self._discount = discount
         self._star = deepcopy(self._env._star) # copy env
+        self._epsilon_copy = deepcopy(self._epsilon) # copy epsilon
 
     def _init_all_states(self):
         """ get all states of the current board
@@ -65,7 +66,7 @@ class MonteCarlo(MultiArmBandit):
         action_list = self._check_avaiable_actions(loc)
         rand = random.random()
         
-        if 0 <= rand <= self._epsilon:
+        if rand <= self._epsilon:
             return random.choice(action_list)
         
         else:
@@ -131,13 +132,15 @@ class MonteCarlo(MultiArmBandit):
             self.reward_record.append(r)
 
 #             self.render()
-            
+
 #         print("steps taken:",len(self.loc_record))
             
 
-    def run_algorithm(self,num_episode = 1):
+    def run_algorithm(self,num_episode = 1,reduce_eps = False):
+        self._eps_step = self._epsilon_copy/num_episode
         
         self._env.reset()
+        
         self._env._star = deepcopy(self._star)
         self._init_all_states()
         self._init_q_values()
@@ -145,7 +148,12 @@ class MonteCarlo(MultiArmBandit):
 
         
         for i in range(num_episode):
+            if reduce_eps:
+                self._epsilon -= self._eps_step
+                
             self._env._star = deepcopy(self._star)
+            self._epslon = deepcopy(self._epsilon_copy)
+            
             self._run_episode()
             self._update_q_values()
 
